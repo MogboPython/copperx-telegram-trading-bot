@@ -1,48 +1,9 @@
 // src/services/copperxApi.ts
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { COPPERX_API_BASE_URL } from '../config';
+import { EmailOtpRequestPayload, EmailOtpRequestResponse, EmailOtpAuthenticatePayload, AuthResponse } from '../types/auth'
+import { UserProfile } from '../types/user';
 import { KycStatusResponse } from '../types/kyc'
-
-// Types
-export interface EmailOtpRequestPayload {
-  email: string;
-}
-
-export interface EmailOtpRequestResponse {
-  email: string;
-  sid: string;
-}
-
-export interface EmailOtpAuthenticatePayload {
-  email: string;
-  otp: string;
-  sid: string;
-}
-
-export interface UserProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  profileImage: string;
-  organizationId: string;
-  role: 'owner' | 'member';
-  status: 'pending' | 'active';
-  type: 'individual' | 'business';
-  relayerAddress: string;
-  flags: string[];
-  walletAddress: string;
-  walletId: string;
-  walletAccountType: string;
-}
-
-export interface AuthResponse {
-  scheme: string;
-  accessToken: string;
-  accessTokenId: string;
-  expireAt: string;
-  user: UserProfile;
-}
 
 // API Service
 export class CopperxApiService {
@@ -82,6 +43,7 @@ export class CopperxApiService {
   // Request email OTP
   async requestEmailOtp(payload: EmailOtpRequestPayload): Promise<EmailOtpRequestResponse> {
     const response = await this.api.post('/api/auth/email-otp/request', payload);
+    console.log(response.data)
     return response.data;
   }
   

@@ -1,8 +1,8 @@
-import { Context } from 'telegraf';
+import { MyContext } from '../types/context';
 import { authHandler } from './authHandler';
 import { authService } from '../services/authService';
 
-export const callbackHandler = async (ctx: Context) => {
+export const callbackHandler = async (ctx: MyContext) => {
     if (!ctx.callbackQuery || !('data' in ctx.callbackQuery)) {
       return;
     }
