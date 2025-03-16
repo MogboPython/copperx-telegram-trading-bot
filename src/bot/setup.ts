@@ -4,6 +4,12 @@ import { getWelcomeMessage } from "../utils/message";
 import { mainMenuKeyboard } from "./keyboards";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
+import { handleKYCAction } from "../modules/kyc/handlers";
+
+// TODO: remove and see if works
+// Import module handlers
+import authHandlers from "../modules/auth/handlers";
+// import profileHandlers from "../modules/profile/handlers";
 
 export function setupBot(sessionMiddleware: any) {
   // Set bot commands
@@ -16,6 +22,11 @@ export function setupBot(sessionMiddleware: any) {
   bot.catch((err) => {
     console.error("Bot error:", err);
   });
+  
+  // module handlers
+  bot.use(authHandlers);
+  // bot.use(profileHandlers);
+  
   
   // Handler for the back_to_main button
   bot.callbackQuery("back_to_main", async (ctx) => {
@@ -38,7 +49,6 @@ export function setupBot(sessionMiddleware: any) {
     
     await ctx.answerCallbackQuery();
     
-    // switch command handlers
     const action = ctx.match[1];
     switch (action) {
       case 'profile':
@@ -47,7 +57,8 @@ export function setupBot(sessionMiddleware: any) {
         break;
       
       case 'kyc':
-        await ctx.reply("KYC feature is coming soon!");
+        await ctx.reply("Loading KYC...");
+        await handleKYCAction(ctx);
         break;
       
       case 'wallets':

@@ -25,7 +25,7 @@ export const authService = {
       const authResponse = await authApi.authenticateWithOtp(email, otp, sid);
       
       if (authResponse && authResponse.accessToken) {
-        // Set the session as authenticated with all user data
+        // Set the session as authenticated with users data
         setAuthenticated(ctx, authResponse);
         return true;
       }

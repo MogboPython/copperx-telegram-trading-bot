@@ -8,6 +8,8 @@ import { connectToDatabase } from "./db";
 // Initial session data
 export const initialSessionData: SessionData = {
   isAuthenticated: false,
+  // TODO: ad if eventually necessary
+//   isVerified: false,
 };
 
 // Create session middleware

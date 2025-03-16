@@ -7,6 +7,7 @@ import { getWelcomeMessage, getSuccessMessage } from "../../utils/message";
 // Create a composer for auth-related commands
 const composer = new Composer<MyContext>();
 
+// TODO: move to it's own place
 // Handler for /start command
 composer.command("start", async (ctx) => {
   const chatId = ctx.chat?.id;

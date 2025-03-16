@@ -53,9 +53,9 @@ export const authApi = {
 
 // KYC status API methods
 export const kycApi = {
-  getStatus: async (token: string) => {
+  getKYCStatus: async (token: string) => {
     try {
-      const response = await api.get('/user/kyc/status', {
+      const response = await api.get('/api/kycs', {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
