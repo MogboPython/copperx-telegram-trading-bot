@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "build": "tsc",
-  "start": "node dist/index.js",
-  "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,9 +13,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@grammyjs/conversations": "^2.0.1",
+    "@grammyjs/storage-free": "^2.5.0",
+    "@grammyjs/storage-mongodb": "^2.5.1",
     "axios": "^1.8.3",
     "dotenv": "^16.4.7",
-    "telegraf": "^4.16.3"
+    "grammy": "^1.35.0",
+    "mongodb": "^6.14.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",

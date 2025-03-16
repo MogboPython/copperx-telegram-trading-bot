@@ -1,4 +1,0 @@
-export const AUTH_SCENES = {
-    EMAIL_INPUT: 'EMAIL_INPUT',
-    OTP_INPUT: 'OTP_INPUT'
-};

@@ -1,4 +1,4 @@
-import { UserProfile } from "./user";
+import { UserData } from "./user";
 
 export interface EmailOtpRequestPayload {
     email: string;
@@ -20,5 +20,5 @@ export interface AuthResponse {
     accessToken: string;
     accessTokenId: string;
     expireAt: string;
-    user: UserProfile;
-  }
+    user: UserData;
+}
