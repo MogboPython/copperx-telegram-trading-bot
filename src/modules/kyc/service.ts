@@ -27,10 +27,10 @@ export const kycService = {
         return `
 🔐 *KYC Verification*
 
-*Verfied At:* ${new Date(kycData.data[0].createdAt).toLocaleDateString()}
 *Status:* ${kycData.data[0].status}
 *Type:* ${kycData.data[0].type || 'Not specified'}
 *Country:* ${kycData.data[0].country || 'Not specified'}
+*Verfied At:* ${new Date(kycData.data[0].createdAt).toLocaleDateString()}
         `.trim();
       },
 };

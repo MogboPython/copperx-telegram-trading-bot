@@ -5,8 +5,8 @@ import { mainMenuKeyboard } from "./keyboards";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
+import { authRateLimiter } from "../utils/rate-limiter";
 
-// TODO: remove and see if works
 // Import module handlers
 import authHandlers from "../modules/auth/handlers";
 // import profileHandlers from "../modules/profile/handlers";
@@ -17,6 +17,9 @@ export function setupBot(sessionMiddleware: any) {
   
   // Middleware
   bot.use(sessionMiddleware);
+  
+  // Add rate limiting middleware
+  bot.use(authRateLimiter);
   
   // Error handling
   bot.catch((err) => {

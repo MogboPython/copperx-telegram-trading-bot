@@ -1,15 +1,35 @@
 import { authApi } from '../../utils/api';
 import { MyContext, setAuthenticated, clearAuthentication } from '../../utils/sessions';
 import { EmailOtpRequestResponse } from '../../types/auth';
+import { recordAuthAttempt } from '../../utils/rate-limiter';
 
 export const authService = {
   // Request OTP for email authentication
-  requestEmailOtp: async (email: string): Promise<EmailOtpRequestResponse | null> => {
+  requestEmailOtp: async (ctx: MyContext, email: string): Promise<EmailOtpRequestResponse | null> => {
     try {
       const result = await authApi.requestEmailOtp(email);
+      
+      if (result && result.sid) {
+        // Record successful attempt if we get a sid
+        if (ctx.from) {
+          recordAuthAttempt(ctx.from.id, true);
+        }
+      } else {
+        // Record failed attempt
+        if (ctx.from) {
+          recordAuthAttempt(ctx.from.id, false);
+        }
+      }
+      
       return result;
     } catch (error) {
       console.error('Error requesting OTP:', error);
+      
+      // Record failed attempt
+      if (ctx.from) {
+        recordAuthAttempt(ctx.from.id, false);
+      }
+      
       return null;
     }
   },
@@ -27,11 +47,29 @@ export const authService = {
       if (authResponse && authResponse.accessToken) {
         // Set the session as authenticated with users data
         setAuthenticated(ctx, authResponse);
+        
+        // Record successful authentication
+        if (ctx.from) {
+          recordAuthAttempt(ctx.from.id, true);
+        }
+        
         return true;
       }
+      
+      // Record failed authentication
+      if (ctx.from) {
+        recordAuthAttempt(ctx.from.id, false);
+      }
+      
       return false;
     } catch (error) {
       console.error('Authentication error:', error);
+      
+      // Record failed authentication
+      if (ctx.from) {
+        recordAuthAttempt(ctx.from.id, false);
+      }
+      
       return false;
     }
   },
