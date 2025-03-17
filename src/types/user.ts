@@ -18,7 +18,7 @@ export interface UserData {
 // Define the session structure
 export interface SessionData {
   isAuthenticated: boolean;
-  // TODO: ad if eventually necessary
+  // TODO: add if eventually necessary
   // isVerified: boolean;
   accessToken?: string;
   accessTokenId?: string;

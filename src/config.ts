@@ -1,12 +1,5 @@
-import { ISession } from "@grammyjs/storage-mongodb";
-import { MongoClient } from "mongodb";
 import dotenv from 'dotenv';
 dotenv.config();
-
-const client = new MongoClient('mongodb://localhost:27017', { monitorCommands: true });
-client.on('commandStarted', started => console.log(started));
-const db = client.db("test");
-const sessions = db.collection<ISession>("users");
 
 
 export const config = {

@@ -70,12 +70,64 @@ export const kycApi = {
 export const walletsApi = {
   getWallets: async (token: string) => {
     try {
-      const response = await api.get('/user/wallets', {
+      const response = await api.get('/api/wallets', {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
     } catch (error) {
       console.error('Error fetching wallets:', error);
+      throw error;
+    }
+  },
+
+  // TODO: Implement other wallet API methods
+  getWalletById: async (token: string, walletId: string) => {
+    try {
+      const response = await api.get(`/api/wallets/${walletId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching wallet by ID:', error);
+      throw error;
+    }
+  },
+  
+  getBalances: async (token: string) => {
+    try {
+      const response = await api.get('/api/wallets/balances', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching wallet balances:', error);
+      throw error;
+    }
+  },
+  
+  // WalletApiResponse
+  setDefaultWallet: async (token: string, walletId: string) => {
+    console.log("making post");
+    try {
+      const response = await api.post('/api/wallets/default', {walletId}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error setting default wallet:', error);
+      throw error;
+    }
+  },
+  
+  getWalletTransactions: async (token: string, walletId: string, page = 1, limit = 10) => {
+    try {
+      const response = await api.get(`/api/wallets/${walletId}/transactions`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { page, limit }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching wallet transactions:', error);
       throw error;
     }
   },

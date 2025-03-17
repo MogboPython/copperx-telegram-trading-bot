@@ -1,17 +1,22 @@
 import { bot } from "./bot";
 import { commands } from "./commands";
-import { getWelcomeMessage } from "../utils/message";
-import { mainMenuKeyboard } from "./keyboards";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
+import { handleWalletsAction } from "../modules/wallet/handlers";
 import { authRateLimiter } from "../utils/rate-limiter";
 
 // Import module handlers
+import homeHandlers from "../modules/home/handlers";
 import authHandlers from "../modules/auth/handlers";
-// import profileHandlers from "../modules/profile/handlers";
+import walletHandlers from "../modules/wallet/handlers";
 
 export function setupBot(sessionMiddleware: any) {
+  // Error handling
+  bot.catch((err) => {
+    console.error("Bot error:", err);
+  });
+
   // Set bot commands
   bot.api.setMyCommands(commands);
   
@@ -21,27 +26,10 @@ export function setupBot(sessionMiddleware: any) {
   // Add rate limiting middleware
   bot.use(authRateLimiter);
   
-  // Error handling
-  bot.catch((err) => {
-    console.error("Bot error:", err);
-  });
-  
   // module handlers
   bot.use(authHandlers);
-  // bot.use(profileHandlers);
-  
-  
-  // Handler for the back_to_main button
-  bot.callbackQuery("back_to_main", async (ctx) => {
-    await ctx.answerCallbackQuery();
-    await ctx.reply(
-      getWelcomeMessage(ctx), 
-      {
-        reply_markup: mainMenuKeyboard,
-        parse_mode: "Markdown"
-      }
-    );
-  });
+  bot.use(homeHandlers);
+  bot.use(walletHandlers);
 
   // Map inline button callbacks to command handlers
   bot.callbackQuery(/^menu_(.+)$/, async (ctx) => {
@@ -55,6 +43,7 @@ export function setupBot(sessionMiddleware: any) {
     const action = ctx.match[1];
     switch (action) {
       case 'profile':
+        // TODO: remove these
         await ctx.reply("Loading profile...");
         await handleProfileAction(ctx);
         break;
@@ -65,7 +54,8 @@ export function setupBot(sessionMiddleware: any) {
         break;
       
       case 'wallets':
-        await ctx.reply("Wallets feature is coming soon!");
+        await ctx.reply("Loading Wallet info...");
+        await handleWalletsAction(ctx);
         break;
       
       case 'balance':

@@ -24,6 +24,7 @@ export const kycService = {
     },
 
     formatKycInfo: (kycData: KycStatusResponse): string => {
+        // TODO: for kycData.count
         return `
 🔐 *KYC Verification*
 
