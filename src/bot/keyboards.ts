@@ -41,7 +41,6 @@ export function createSetDefaultWalletKeyboard(wallets: Array<{ id: string, name
   const keyboard = new InlineKeyboard();
   
   wallets.forEach((wallet) => {
-    // Format wallet address for display by truncating it
     const displayAddress = wallet.address.length > 16 
     ? `${wallet.address.substring(0, 8)}...${wallet.address.substring(wallet.address.length - 8)}`
     : wallet.address;
@@ -49,18 +48,5 @@ export function createSetDefaultWalletKeyboard(wallets: Array<{ id: string, name
     keyboard.text(`${wallet.name} - ${displayAddress}`, `wallet_make_default_${wallet.id}`);
     keyboard.row();
   });
-  return keyboard;
-}
-
-// Keyboard for listing multiple wallets
-export function createWalletListKeyboard(wallets: Array<{ id: string, name: string }>): InlineKeyboard {
-  const keyboard = new InlineKeyboard();
-  
-  wallets.forEach((wallet, index) => {
-    keyboard.text(`${index + 1}. ${wallet.name}`, `wallet_view_${wallet.id}`);
-    keyboard.row();
-  });
-  keyboard.text("« Back to Wallets", "back_to_wallets");
-
   return keyboard;
 }

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { config } from '../config';
+import { Transaction, TransactionResponse } from '../types/transaction';
 
 // Create an axios instance for the Copperx API
 const api = axios.create({
@@ -80,7 +81,6 @@ export const walletsApi = {
     }
   },
 
-  // TODO: Implement other wallet API methods
   getWalletById: async (token: string, walletId: string) => {
     try {
       const response = await api.get(`/api/wallets/${walletId}`, {
@@ -107,65 +107,46 @@ export const walletsApi = {
   
   // WalletApiResponse
   setDefaultWallet: async (token: string, walletId: string) => {
-    console.log("making post");
     try {
       const response = await api.post('/api/wallets/default', {walletId}, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      // TODO: type safety
       return response.data;
     } catch (error) {
       console.error('Error setting default wallet:', error);
       throw error;
     }
   },
-  
-  getWalletTransactions: async (token: string, walletId: string, page = 1, limit = 10) => {
+};
+
+export const transferApi = {
+  getTransactions: async (token: string, page = 1, limit = 10) => {
     try {
-      const response = await api.get(`/api/wallets/${walletId}/transactions`, {
+      const response = await api.get('/api/transfers', {
         headers: { Authorization: `Bearer ${token}` },
         params: { page, limit }
       });
-      return response.data;
+      return response.data as TransactionResponse;
     } catch (error) {
       console.error('Error fetching wallet transactions:', error);
       throw error;
     }
   },
-};
-
-// Balance API methods
-export const balanceApi = {
-  getBalance: async (token: string) => {
+  
+  getTransactionById: async (token: string, transactionId: string) => {
     try {
-      const response = await api.get('/user/balance', {
+      const response = await api.get(`/api/transfers/${transactionId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data as Transaction;
     } catch (error) {
-      console.error('Error fetching balance:', error);
+      console.error('Error fetching transaction details:', error);
       throw error;
     }
   },
-};
 
-// Transactions API methods
-export const transactionsApi = {
-  getTransactions: async (token: string, page = 1, limit = 10) => {
-    try {
-      const response = await api.get('/user/transactions', {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { page, limit }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-      throw error;
-    }
-  },
-};
-
-// Transfer API methods
-export const transferApi = {
+  // TODO: do away with
   sendMoney: async (token: string, data: { recipient: string; amount: number }) => {
     try {
       const response = await api.post('/transfer/send', data, {

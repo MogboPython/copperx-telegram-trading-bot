@@ -4,12 +4,14 @@ import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
 import { handleWalletsAction, handleWalletBalances } from "../modules/wallet/handlers";
+import { handleTransactionsAction } from '../modules/transactions/handlers';
 import { authRateLimiter } from "../utils/rate-limiter";
 
 // Import module handlers
 import homeHandlers from "../modules/home/handlers";
 import authHandlers from "../modules/auth/handlers";
 import walletHandlers from "../modules/wallet/handlers";
+import txHandlers from '../modules/transactions/handlers';
 
 export function setupBot(sessionMiddleware: any) {
   // Error handling
@@ -30,6 +32,7 @@ export function setupBot(sessionMiddleware: any) {
   bot.use(authHandlers);
   bot.use(homeHandlers);
   bot.use(walletHandlers);
+  bot.use(txHandlers);
 
   // Map inline button callbacks to command handlers
   bot.callbackQuery(/^menu_(.+)$/, async (ctx) => {
@@ -67,7 +70,7 @@ export function setupBot(sessionMiddleware: any) {
         break;
       
       case 'transactions':
-        await ctx.reply("Transactions feature is coming soon!");
+        await handleTransactionsAction(ctx);
         break;
       
       case 'logout':
