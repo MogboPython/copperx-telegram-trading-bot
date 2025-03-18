@@ -67,7 +67,7 @@ export const walletService = {
 
   // Format wallet details for display
   formatWalletDetails: (wallets: Wallet[]): string => {
-    let walletListText = "📋 *Your Wallets*\n\n (the starred wallet is your default)";
+    let walletListText = "📋 *Your Wallets*\n(the ⭐ wallet is your default)\n\n";
 
     wallets.forEach((wallet) => {
         walletListText += `${wallet.name}:  \`${wallet.address}\`${wallet.isDefault ? ' ⭐' : ''}\n`;

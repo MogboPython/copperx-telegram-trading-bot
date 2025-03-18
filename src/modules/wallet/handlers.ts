@@ -57,7 +57,7 @@ export const handleAllWallets = async (ctx: MyContext) => {
         await ctx.reply(
             walletsInfo,
             { 
-                parse_mode: 'MarkdownV2',
+                parse_mode: 'Markdown',
                 reply_markup: backToMainKeyboard 
             }
         );
@@ -70,7 +70,7 @@ export const handleAllWallets = async (ctx: MyContext) => {
     } catch (error) {
       console.error("Error fetching wallets:", error);
       
-      await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
+    //   await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
       await ctx.reply(
         getErrorMessage("An error occurred while fetching your wallets. Please try again later."),
         { 
