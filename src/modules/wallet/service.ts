@@ -3,14 +3,6 @@ import { walletsApi } from "../../utils/api";
 import { WalletApiResponse, Wallet, WalletBalance } from '../../types/wallet';
 import { saveWallets, getWalletsForUser, getWalletById as getWalletByIdFromDB } from "./models";
 
-// export interface WalletBalance {
-//   walletId: string;
-//   walletName: string;
-//   currency: string;
-//   balance: string;
-//   availableBalance: string;
-// }
-
 // export interface WalletTransaction {
 //   id: string;
 //   walletId: string;
@@ -123,8 +115,18 @@ export const walletService = {
         return [];
       }
       
-      const balances = await walletsApi.getBalances(accessToken);
-      return balances.data || [];
+      const balancesResponse = await walletsApi.getBalances(accessToken);
+      const apiBalances: WalletBalance[] = balancesResponse || [];
+
+      // Map API response to our WalletBalance interface
+      const balances: WalletBalance[] = apiBalances.map(balance => ({
+        walletId: balance.walletId,
+        isDefault: balance.isDefault,
+        network: balance.network,
+        balances: balance.balances,
+    }));
+      
+      return balances;
     } catch (error) {
       console.error('Error fetching wallet balances:', error);
       return [];
@@ -132,9 +134,19 @@ export const walletService = {
   },
 
   formatWalletBalanceDetails: (balances: WalletBalance[]): string => {
-    return "balance"
+    let balanceDetails = "💰 *Your Wallet Balances*\n\n";
+
+    balances.forEach((balance) => {
+        for (var i = 0; i < balance.balances.length; i++){
+            balanceDetails += `Network: *${getNetworkNameFromCode(balance.network)}*\nAddress: \`${balance.balances[i].address}\`\nBalance: ${balance.balances[i].balance} ${balance.balances[i].symbol}\n\n`;   
+        }
+    });
+    balanceDetails += "Tap to copy the address and send tokens to deposit.";
+
+    return balanceDetails;
   }
-  
+
+
   // Get default wallet
 //   getDefaultWallet: async (ctx: MyContext): Promise<Wallet | null> => {
 //     try {

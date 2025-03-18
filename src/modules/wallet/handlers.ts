@@ -1,7 +1,6 @@
 import { Composer } from "grammy";
 import { MyContext, isAuthenticated } from "../../utils/sessions";
-import { connectAccountKeyboard, walletsMenuKeyboard, createSetDefaultWalletKeyboard, backToMainKeyboard } from "../../bot/keyboards";
-// import { walletsMenuKeyboard, createWalletListKeyboard, createSetDefaultWalletKeyboard, createWalletDetailsKeyboard } from "./keyboards";
+import { connectAccountKeyboard, walletsMenuKeyboard, createSetDefaultWalletKeyboard, backToMainKeyboard, txActionsMenuKeyboard } from "../../bot/keyboards";
 import { getErrorMessage } from "../../utils/message";
 import { walletService } from "./service";
 
@@ -174,55 +173,56 @@ export const handleSetDefaultWalletResponse = async (ctx: MyContext, walletId: s
 }
 
 // Handler function for wallet balances
-// export const handleWalletBalances = async (ctx: MyContext) => {
-//   if (!ctx.chat) {
-//     console.error("Chat context is undefined");
-//     return;
-//   }
+export const handleWalletBalances = async (ctx: MyContext) => {
+  if (!ctx.chat) {
+    console.error("Chat context is undefined");
+    return;
+  }
 
-//   if (!isAuthenticated(ctx)) {
-//     return await ctx.reply(
-//       "You need to connect your account first.",
-//       { reply_markup: connectAccountKeyboard }
-//     );
-//   }
+  if (!isAuthenticated(ctx)) {
+    return await ctx.reply(
+      "You need to connect your account first.",
+      { reply_markup: connectAccountKeyboard }
+    );
+  }
 
-//   // Show loading message
-//   const loadingMsg = await ctx.reply("Fetching your wallet balances...");
+  // Show loading message
+  const loadingMsg = await ctx.reply("Fetching your wallet balances...");
 
-//   try {
-//     // Get wallet balances
-//     const balances = await walletService.getWalletBalances(ctx);
+  try {
+    // Get wallet balances
+    const balances = await walletService.getWalletBalances(ctx);
+    console.log(balances);
     
-//     await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
+    await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
     
-//     if (balances && balances.length > 0) {
-//       // Format and display balances
-//       const balancesText = walletService.formatWalletBalances(balances);
+    if (balances && balances.length > 0) {
+      // Format and display balances
+      const balancesInfo = walletService.formatWalletBalanceDetails(balances);
       
-//       await ctx.reply(balancesText, {
-//         parse_mode: "Markdown",
-//         reply_markup: walletsMenuKeyboard
-//       });
-//     } else {
-//       await ctx.reply(
-//         "You don't have any wallet balances yet.",
-//         { reply_markup: walletsMenuKeyboard }
-//       );
-//     }
-//   } catch (error) {
-//     console.error("Error fetching wallet balances:", error);
+      await ctx.reply(balancesInfo, {
+        parse_mode: "Markdown",
+        reply_markup: txActionsMenuKeyboard
+      });
+    } else {
+      await ctx.reply(
+        "You don't have any wallet balances yet.",
+        { reply_markup: walletsMenuKeyboard }
+      );
+    }
+  } catch (error) {
+    console.error("Error fetching wallet balances:", error);
     
-//     await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
-//     await ctx.reply(
-//       getErrorMessage("An error occurred while fetching your wallet balances. Please try again later."),
-//       { 
-//         parse_mode: "Markdown",
-//         reply_markup: walletsMenuKeyboard 
-//       }
-//     );
-//   }
-// };
+    await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
+    await ctx.reply(
+      getErrorMessage("An error occurred while fetching your wallet balances. Please try again later."),
+      { 
+        parse_mode: "Markdown",
+        reply_markup: walletsMenuKeyboard 
+      }
+    );
+  }
+};
 
 
 // Handler for back to wallets button
@@ -243,17 +243,6 @@ export const handleSetDefaultWalletResponse = async (ctx: MyContext, walletId: s
 //   );
 // };
 
-// Set up button handlers
-// composer.callbackQuery("wallet_balances", async (ctx) => {
-//   await ctx.answerCallbackQuery();
-//   await handleWalletBalances(ctx);
-// });
-
-// composer.callbackQuery("wallet_default", async (ctx) => {
-//   await ctx.answerCallbackQuery();
-//   await handleDefaultWallet(ctx);
-// });
-
 composer.callbackQuery("wallet_all", async (ctx) => {
   await ctx.answerCallbackQuery();
   await handleAllWallets(ctx);
@@ -269,6 +258,47 @@ composer.callbackQuery(/^wallet_make_default_(.+)$/, async (ctx) => {
     const walletId = ctx.match[1];
     await handleSetDefaultWalletResponse(ctx, walletId);
 });
+
+// composer.callbackQuery("back_to_wallet_menu", async (ctx) => {
+//     await ctx.answerCallbackQuery();
+//     await ctx.reply('', {
+//             parse_mode: "Markdown",
+//             reply_markup: walletsMenuKeyboard
+//         }
+//     );
+// });
+
+// Add this callback handler for the refresh button
+composer.callbackQuery("refresh_balance", async (ctx) => {
+    if (!ctx.callbackQuery.message) {
+      await ctx.answerCallbackQuery("Cannot refresh this message");
+      return;
+    }
+  
+    // Show loading state via callback answer
+    await ctx.answerCallbackQuery("Refreshing balances...");
+  
+    try {
+      // Get updated wallet balances
+      const balances = await walletService.getWalletBalances(ctx);
+      
+      if (balances && balances.length > 0) {
+        // Format updated balances
+        const balancesInfo = walletService.formatWalletBalanceDetails(balances);
+        
+        // Edit the current message instead of sending a new one
+        await ctx.editMessageText(balancesInfo, {
+          parse_mode: "Markdown",
+          reply_markup: txActionsMenuKeyboard
+        });
+      } else {
+        await ctx.answerCallbackQuery("No balances found");
+      }
+    } catch (error) {
+      console.error("Error refreshing balances:", error);
+      await ctx.answerCallbackQuery("Failed to refresh balances");
+    }
+  });
 
 // composer.callbackQuery("back_to_wallets", async (ctx) => {
 //   await ctx.answerCallbackQuery();

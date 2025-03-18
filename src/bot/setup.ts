@@ -3,7 +3,7 @@ import { commands } from "./commands";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
-import { handleWalletsAction } from "../modules/wallet/handlers";
+import { handleWalletsAction, handleWalletBalances } from "../modules/wallet/handlers";
 import { authRateLimiter } from "../utils/rate-limiter";
 
 // Import module handlers
@@ -43,23 +43,19 @@ export function setupBot(sessionMiddleware: any) {
     const action = ctx.match[1];
     switch (action) {
       case 'profile':
-        // TODO: remove these
-        await ctx.reply("Loading profile...");
         await handleProfileAction(ctx);
         break;
       
       case 'kyc':
-        await ctx.reply("Loading KYC...");
         await handleKYCAction(ctx);
         break;
       
       case 'wallets':
-        await ctx.reply("Loading Wallet info...");
         await handleWalletsAction(ctx);
         break;
       
       case 'balance':
-        await ctx.reply("Balance feature is coming soon!");
+        await handleWalletBalances(ctx);
         break;
       
       case 'send':

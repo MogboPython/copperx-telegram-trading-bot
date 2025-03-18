@@ -20,7 +20,7 @@ export const commands: BotCommand[] = [
   },
   {
     command: "balance",
-    description: "Check your USDC balance",
+    description: "Check your Wallet balance",
   },
   {
     command: "send",

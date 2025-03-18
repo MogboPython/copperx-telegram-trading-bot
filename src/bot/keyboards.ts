@@ -29,17 +29,19 @@ export function createTransactionKeyboard(transactionId: string): InlineKeyboard
 
 // Main wallet menu keyboard
 export const walletsMenuKeyboard = new InlineKeyboard()
-  // .text("💰 Balances", "wallet_balances").text("⭐ Default Wallet", "wallet_default").row()
   .text("📋 All Wallets", "wallet_all").text("🔄 Set Default Wallet", "wallet_set_default").row()
+  .text("💰 Balances", "menu_balance").row()
   .text("« Back to Main Menu", "back_to_main");
 
-// Keyboard for selecting a default wallet
+export const txActionsMenuKeyboard = new InlineKeyboard()
+  .text("💸 Send Money", "menu_send").text("🏦 Deposit", "menu_deposit").row()
+  .text("Refresh", "refresh_balance");
+
 export function createSetDefaultWalletKeyboard(wallets: Array<{ id: string, name: string, address: string }>): InlineKeyboard {
   const keyboard = new InlineKeyboard();
   
-  // Add a button for each wallet
   wallets.forEach((wallet) => {
-    // Format wallet address for display (truncate if too long)
+    // Format wallet address for display by truncating it
     const displayAddress = wallet.address.length > 16 
     ? `${wallet.address.substring(0, 8)}...${wallet.address.substring(wallet.address.length - 8)}`
     : wallet.address;
@@ -54,16 +56,11 @@ export function createSetDefaultWalletKeyboard(wallets: Array<{ id: string, name
 export function createWalletListKeyboard(wallets: Array<{ id: string, name: string }>): InlineKeyboard {
   const keyboard = new InlineKeyboard();
   
-  // Add a button for each wallet
   wallets.forEach((wallet, index) => {
     keyboard.text(`${index + 1}. ${wallet.name}`, `wallet_view_${wallet.id}`);
-    
-    // Add a row after each wallet (or every 2 wallets if you prefer)
     keyboard.row();
   });
-  
-  // Add back button
   keyboard.text("« Back to Wallets", "back_to_wallets");
-  
+
   return keyboard;
 }
