@@ -160,9 +160,9 @@ The bot implements rate limiting to prevent abuse:
 
 ## Future improvements
 
-[ ] In bot KYC/KYB verification
-[ ] Add two-factor authentication for high-value transactions
-[ ] Allow users to schedule recurring or future-dated transactions
+- [*] In bot KYC/KYB verification
+- [ ] Add two-factor authentication for high-value transactions
+- [ ] Allow users to schedule recurring or future-dated transactions
 
 ## Contributing
 
