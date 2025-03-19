@@ -3,7 +3,7 @@
 A Telegram bot for managing CopperX accounts, wallets, and transactions directly from Telegram. The bot provides a seamless interface for users to connect their CopperX accounts, view wallet information, check transaction history, and receive real-time deposit notifications. You would need to create a [CopperX account](https://payout.copperx.io/auth/login) to use this bot.
 
 **Live Bot**: [t.me/mo_copperx_tele_v1_bot](https://t.me/mo_copperx_tele_v1_bot)  
-**Server Deployment**: coming soon
+**Server Deployment**: [On render](https://copperx-telegram-trading-bot.onrender.com)
 
 ## Features
 
