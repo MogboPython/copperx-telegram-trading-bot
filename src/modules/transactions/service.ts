@@ -17,7 +17,23 @@ function getRecipient(transaction: Transaction): string | undefined {
     }
 
     return recipient
-}
+};
+
+// Formats an amount in 10^8 format to a human-readable decimal
+function formatAmount(amount: string | number, decimals = 8): string {
+    try {
+      const numericAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
+      const actualAmount = numericAmount / Math.pow(10, decimals);
+      
+      return actualAmount.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: decimals
+      });
+    } catch (error) {
+      console.error('Error formatting amount:', error);
+      return amount.toString();
+    }
+  };
 
 export const transactionService = {
   // Get user transactions
@@ -57,7 +73,7 @@ export const transactionService = {
     let recipient = getRecipient(transaction);
 
     const date = new Date(transaction.createdAt).toLocaleDateString();
-    const amount = `${transaction.amount} ${transaction.currency}`;
+    const amount = `${formatAmount(transaction.amount, 8)} ${transaction.currency}`;
     const type = transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1);
     
     // TODO: change this
@@ -71,10 +87,10 @@ export const transactionService = {
     return `*Transaction ID:* \`${transaction.id}\`
 *Date:* ${new Date(transaction.createdAt).toLocaleDateString()}
 *Type:* ${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}
-*Amount:* ${transaction.amount} ${transaction.currency}
+*Amount:* ${formatAmount(transaction.amount, 8)} ${transaction.currency}
 *Status:* ${transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
 *Recipient:* ${recipient}
-*Fee:* ${transaction.totalFee} ${transaction.feeCurrency}`;
+*Fee:* ${formatAmount(transaction.totalFee, 8)} ${transaction.feeCurrency}`;
   }
 };
 

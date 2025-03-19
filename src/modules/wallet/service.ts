@@ -1,22 +1,8 @@
 import { MyContext } from "../../utils/sessions";
 import { walletsApi } from "../../utils/api";
 import { WalletApiResponse, Wallet, WalletBalance } from '../../types/wallet';
-import { saveWallets, getWalletsForUser, getWalletById as getWalletByIdFromDB } from "./models";
 
-// export interface WalletTransaction {
-//   id: string;
-//   walletId: string;
-//   type: string;
-//   amount: string;
-//   currency: string;
-//   status: string;
-//   createdAt: string;
-//   toAddress?: string;
-//   fromAddress?: string;
-//   txHash?: string;
-// }
-
-function getNetworkNameFromCode(input: string): string | undefined {
+export function getNetworkNameFromCode(input: string): string | undefined {
     const numberToWordMap: { [key: string]: string } = {
         "137": "Polygon",
         "42161": "Arbitrum",
@@ -42,16 +28,11 @@ export const walletService = {
       const walletsResponse = await walletsApi.getWallets(accessToken);
       const apiWallets: WalletApiResponse[] = walletsResponse || [];
       
-      // Save wallets to MongoDB
-      if (apiWallets.length > 0) {
-        await saveWallets(userId, apiWallets);
-      }
-      
       // Map API response to our Wallet interface
       const wallets: Wallet[] = apiWallets.map(wallet => ({
         id: wallet.id,
         name: `${getNetworkNameFromCode(wallet.network)}`,
-        address: wallet.walletAddress,
+        walletAddress: wallet.walletAddress,
         type: wallet.walletType,
         network: wallet.network,
         isDefault: wallet.isDefault,
@@ -70,7 +51,7 @@ export const walletService = {
     let walletListText = "📋 *Your Wallets*\n(the ⭐ wallet is your default)\n\n";
 
     wallets.forEach((wallet) => {
-        walletListText += `${wallet.name}:  \`${wallet.address}\`${wallet.isDefault ? ' ⭐' : ''}\n`;
+        walletListText += `${wallet.name}:  \`${wallet.walletAddress}\`${wallet.isDefault ? ' ⭐' : ''}\n`;
     });
     walletListText += "Tap to copy the address and send tokens to deposit.";
     return walletListText;
@@ -90,21 +71,34 @@ export const walletService = {
       const response = await walletsApi.setDefaultWallet(accessToken, walletId);
       
       if (response && response.id) {
-        apiSuccess = true;
-        
-        // TODO: remove mongo
-        // Update the wallet in MongoDB with the response data
-        if (userId) {
-            await saveWallets(userId, [response]);
-          }
-        }
-        return apiSuccess;
+          apiSuccess = true;
+      }
+      return apiSuccess;
 
     } catch (error) {
       console.error('Error setting default wallet:', error);
       return false;
     }
   },
+
+    // Get default wallet
+    getDefaultWallet: async (ctx: MyContext): Promise<Wallet | null> => {
+      try {
+        const accessToken = ctx.session.accessToken;
+        
+        if (!accessToken) {
+          return null;
+        }
+        
+        const defaultWallet = await walletsApi.getDefaultWallet(accessToken);
+        
+        return defaultWallet;
+  
+      } catch (error) {
+        console.error('Error getting default wallet:', error);
+        return null;
+      }
+    },
   
   // Get wallet balances
   getWalletBalances: async (ctx: MyContext): Promise<WalletBalance[]> => {
@@ -145,33 +139,6 @@ export const walletService = {
 
     return balanceDetails;
   }
-
-
-  // Get default wallet
-//   getDefaultWallet: async (ctx: MyContext): Promise<Wallet | null> => {
-//     try {
-//       const accessToken = ctx.session.accessToken;
-      
-//       if (!accessToken) {
-//         return null;
-//       }
-      
-//       const wallets = await walletsApi.getWallets(accessToken);
-      
-//       if (!wallets.data || wallets.data.length === 0) {
-//         return null;
-//       }
-      
-//       // Find default wallet
-//       const defaultWallet = wallets.data.find(wallet => wallet.isDefault);
-      
-//       // If no wallet is marked as default, return the first one
-//       return defaultWallet || wallets.data[0];
-//     } catch (error) {
-//       console.error('Error fetching default wallet:', error);
-//       return null;
-//     }
-//   },
   
   // Get wallet by ID
 //   getWalletById: async (ctx: MyContext, walletId: string): Promise<Wallet | null> => {

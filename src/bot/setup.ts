@@ -3,7 +3,7 @@ import { commands } from "./commands";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
-import { handleWalletsAction, handleWalletBalances } from "../modules/wallet/handlers";
+import { handleWalletsAction, handleWalletBalances, handleSendAction, handleDepositAction } from "../modules/wallet/handlers";
 import { handleTransactionsAction } from '../modules/transactions/handlers';
 import { authRateLimiter } from "../utils/rate-limiter";
 
@@ -62,11 +62,11 @@ export function setupBot(sessionMiddleware: any) {
         break;
       
       case 'send':
-        await ctx.reply("Send money feature is coming soon!");
+        await handleSendAction(ctx);
         break;
       
       case 'deposit':
-        await ctx.reply("Deposit feature is coming soon!");
+        await handleDepositAction(ctx);
         break;
       
       case 'transactions':

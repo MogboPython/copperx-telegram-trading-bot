@@ -28,8 +28,6 @@ export const handleKYCAction = async (ctx: MyContext) => {
         const isVerified = kycService.isUserVerified(kycStatusData);
 
         if (kycStatusData && isVerified) {
-            // TODO: ad if eventually necessary
-            // ctx.session.isVerified = true;
             // Format and display kyc information
             const kycInfo = kycService.formatKycInfo(kycStatusData);
             

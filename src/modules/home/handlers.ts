@@ -28,8 +28,16 @@ composer.command("start", async (ctx) => {
   } else {
     // User is not authenticated, show connect button
     await ctx.reply(
-      "Welcome to Copperx Payout! To get started, please connect your account.",
-      { reply_markup: connectAccountKeyboard }
+      `What can this bot do?\n\n` +
+      `Blazingly-fast payments and wallet management at your fingertips with CopperX. Use /start to open the main menu and ` +
+      `start using all our features - quick transfers, wallet tracking, balance checking and more.\n\n` +
+      `Website: https://copperx.io/\n` +
+      `Twitter: https://x.com/copperxhq\n` +
+      `Telegram: https://t.me/copperxcommunity`,
+      { 
+        reply_markup: connectAccountKeyboard,
+        parse_mode: "Markdown",
+      }
     );
   }
 });

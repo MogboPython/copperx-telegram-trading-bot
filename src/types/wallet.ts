@@ -24,7 +24,7 @@ export interface WalletApiResponse {
 export interface Wallet {
     id: string;
     name: string;
-    address: string;
+    walletAddress: string;
     type: string;
     network: string;
     isDefault?: boolean;

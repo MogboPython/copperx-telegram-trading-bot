@@ -1,8 +1,8 @@
 import { Composer } from "grammy";
 import { MyContext, isAuthenticated } from "../../utils/sessions";
-import { connectAccountKeyboard, walletsMenuKeyboard, createSetDefaultWalletKeyboard, backToMainKeyboard, txActionsMenuKeyboard } from "../../bot/keyboards";
+import { connectAccountKeyboard, walletsMenuKeyboard, createSetDefaultWalletKeyboard, backToMainKeyboard, txActionsMenuKeyboard, sendMenuKeyboard } from "../../bot/keyboards";
 import { getErrorMessage } from "../../utils/message";
-import { walletService } from "./service";
+import { walletService, getNetworkNameFromCode } from "./service";
 
 // Create a composer for wallet-related commands
 const composer = new Composer<MyContext>();
@@ -69,8 +69,6 @@ export const handleAllWallets = async (ctx: MyContext) => {
       }
     } catch (error) {
       console.error("Error fetching wallets:", error);
-      
-    //   await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
       await ctx.reply(
         getErrorMessage("An error occurred while fetching your wallets. Please try again later."),
         { 
@@ -99,8 +97,6 @@ export const handleSetDefaultWallet = async (ctx: MyContext) => {
     const loadingMsg = await ctx.reply("Fetching your wallets...");
   
     try {
-      // Get all wallets for selection
-      // TODO: might remove saving wallets to db
       const wallets = await walletService.getAllWallets(ctx);
       
       await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
@@ -110,7 +106,7 @@ export const handleSetDefaultWallet = async (ctx: MyContext) => {
           "🔄 *Set Default Wallet*\n\nSelect which wallet to set as your default:",
           { 
             parse_mode: "Markdown",
-            reply_markup: createSetDefaultWalletKeyboard(wallets.map(w => ({ id: w.id, name: w.name, address: w.address })))
+            reply_markup: createSetDefaultWalletKeyboard(wallets.map(w => ({ id: w.id, name: w.name, address: w.walletAddress })))
           }
         );
       } else {
@@ -192,7 +188,6 @@ export const handleWalletBalances = async (ctx: MyContext) => {
   try {
     // Get wallet balances
     const balances = await walletService.getWalletBalances(ctx);
-    console.log(balances);
     
     await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
     
@@ -224,24 +219,52 @@ export const handleWalletBalances = async (ctx: MyContext) => {
   }
 };
 
+export const handleSendAction = async (ctx: MyContext) => {
+  if (!ctx.chat) {
+    console.error("Chat context is undefined");
+    return;
+  }
 
-// Handler for back to wallets button
-// export const handleBackToWallets = async (ctx: MyContext) => {
-//   if (!ctx.chat) {
-//     console.error("Chat context is undefined");
-//     return;
-//   }
+  if (!isAuthenticated(ctx)) {
+    return await ctx.reply(
+      "You need to connect your account first.",
+      { reply_markup: connectAccountKeyboard }
+    );
+  }
 
-//   await ctx.answerCallbackQuery();
-  
-//   await ctx.reply(
-//     "🏦 *Wallet Management*\n\nManage your digital wallets and check balances.",
-//     { 
-//       parse_mode: "Markdown",
-//       reply_markup: walletsMenuKeyboard 
-//     }
-//   );
-// };
+  await ctx.editMessageText(
+    "💰 *Send Money*\n\nSending your tokens has never been easier. Select how you want to send:", 
+    {
+      parse_mode: "Markdown",
+      reply_markup: sendMenuKeyboard
+    });
+};
+
+export const handleDepositAction = async (ctx: MyContext) => {
+  if (!ctx.chat) {
+    console.error("Chat context is undefined");
+    return;
+  }
+
+  if (!isAuthenticated(ctx)) {
+    return await ctx.reply(
+      "You need to connect your account first.",
+      { reply_markup: connectAccountKeyboard }
+    );
+  }
+
+  const wallet = await walletService.getDefaultWallet(ctx);
+  const address = `\`${wallet?.walletAddress}\`` || "Default address not set";
+  const network = `${getNetworkNameFromCode(wallet?.network||"")}`
+
+  await ctx.reply(`To deposit send USDC to your default address:`);
+  await ctx.reply(
+    `${network} ${address}`,
+    { 
+      parse_mode: "Markdown"
+    }
+  );
+};
 
 composer.callbackQuery("wallet_all", async (ctx) => {
   await ctx.answerCallbackQuery();
@@ -257,6 +280,21 @@ composer.callbackQuery(/^wallet_make_default_(.+)$/, async (ctx) => {
     await ctx.answerCallbackQuery();
     const walletId = ctx.match[1];
     await handleSetDefaultWalletResponse(ctx, walletId);
+});
+
+composer.callbackQuery("send_to_email", async (ctx) => {
+    await ctx.answerCallbackQuery();
+    await ctx.reply("Send money feature is coming soon!");
+});
+
+composer.callbackQuery("send_to_wallet", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.reply("Send money feature is coming soon!");
+});
+
+composer.callbackQuery("send_to_bank", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.reply("Send money feature is coming soon!");
 });
 
 // composer.callbackQuery("back_to_wallet_menu", async (ctx) => {

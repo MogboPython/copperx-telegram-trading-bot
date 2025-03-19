@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { config } from '../config';
 import { Transaction, TransactionResponse } from '../types/transaction';
+import { Wallet } from '../types/wallet';
 
 // Create an axios instance for the Copperx API
 const api = axios.create({
@@ -81,12 +82,12 @@ export const walletsApi = {
     }
   },
 
-  getWalletById: async (token: string, walletId: string) => {
+  getDefaultWallet: async (token: string) => {
     try {
-      const response = await api.get(`/api/wallets/${walletId}`, {
+      const response = await api.get('/api/wallets/default', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data as Wallet;
     } catch (error) {
       console.error('Error fetching wallet by ID:', error);
       throw error;

@@ -33,6 +33,13 @@ export const walletsMenuKeyboard = new InlineKeyboard()
   .text("💰 Balances", "menu_balance").row()
   .text("« Back to Main Menu", "back_to_main");
 
+// Main send menu keyboard
+export const sendMenuKeyboard = new InlineKeyboard()
+  .text("✉️ Send to Email", "send_to_email").row()
+  .text("👛 Send to Wallet", "send_to_wallet").row()
+  .text("🏦 Bank Withdrawal", "send_to_bank").row()
+  .text("« Back to Main Menu", "back_to_main");
+
 export const txActionsMenuKeyboard = new InlineKeyboard()
   .text("💸 Send Money", "menu_send").text("🏦 Deposit", "menu_deposit").row()
   .text("Refresh", "refresh_balance");

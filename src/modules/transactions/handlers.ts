@@ -62,8 +62,7 @@ export const handleTransactionsAction = async (ctx: MyContext) => {
       });
     } else {
       await ctx.reply(
-        "You don't have any transactions yet.",
-        { reply_markup: backToMainKeyboard }
+        "You don't have any transactions yet."
       );
     }
   } catch (error) {

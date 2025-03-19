@@ -1,6 +1,5 @@
 import { MongoClient } from 'mongodb';
 import { config } from '../config';
-import { initWalletsCollection } from '../modules/wallet/models';
 
 // Create MongoDB client
 const client = new MongoClient(config.MONGODB_URI);
@@ -10,9 +9,6 @@ export async function connectToDatabase() {
   try {
     await client.connect();
     console.log('Connected to MongoDB');
-
-    // Initialize collections
-    await initWalletsCollection(client);
 
     return client.db(config.MONGODB_DB_NAME);
   } catch (error) {
