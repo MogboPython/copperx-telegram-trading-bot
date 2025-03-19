@@ -2,7 +2,7 @@
 
 A Telegram bot for managing CopperX accounts, wallets, and transactions directly from Telegram. The bot provides a seamless interface for users to connect their CopperX accounts, view wallet information, check transaction history, and receive real-time deposit notifications.
 
-**Live Bot**: [t.me/mo_copperx_tele_v1_bot](https://t.me/mo_copperx_tele_v1_bot)
+**Live Bot**: [t.me/mo_copperx_tele_v1_bot](https://t.me/mo_copperx_tele_v1_bot)  
 **Server Deployment**: coming soon
 
 ## Features
@@ -160,9 +160,9 @@ The bot implements rate limiting to prevent abuse:
 
 ## Future improvements
 
-- [*] In bot KYC/KYB verification
-- [ ] Add two-factor authentication for high-value transactions
-- [ ] Allow users to schedule recurring or future-dated transactions
+- In bot KYC/KYB verification
+- Add two-factor authentication for high-value transactions
+- Allow users to schedule recurring or future-dated transactions
 
 ## Contributing
 
