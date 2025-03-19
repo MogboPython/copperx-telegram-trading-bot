@@ -3,6 +3,8 @@ dotenv.config();
 
 
 export const config = {
+  PORT: process.env.PORT || '4000',
+
   // Bot configuration
   TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || '',
   
