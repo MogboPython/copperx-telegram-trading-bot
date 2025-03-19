@@ -37,6 +37,9 @@ export function setupBot(sessionMiddleware: any) {
   bot.use(txHandlers);
   bot.use(transferHandlers);
 
+    // const loadingMsg = await ctx.reply("Verifying OTP...");
+    // await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
+
   // Map inline button callbacks to command handlers
   bot.callbackQuery(/^menu_(.+)$/, async (ctx) => {
     if (!ctx.chat) {

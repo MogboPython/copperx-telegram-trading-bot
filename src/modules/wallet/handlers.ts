@@ -21,7 +21,7 @@ export const handleWalletsAction = async (ctx: MyContext) => {
     );
   }
 
-  await ctx.reply(
+  await ctx.editMessageText(
     "🏦 *Wallet Management*\n\nManage your digital wallets and check balances.",
     { 
       parse_mode: "Markdown",

@@ -125,4 +125,15 @@ composer.callbackQuery("back_to_main", async (ctx) => {
     );
 });
 
+composer.callbackQuery("back_to_main_send", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.editMessageText(
+      getWelcomeMessage(ctx), 
+      {
+      reply_markup: mainMenuKeyboard,
+      parse_mode: "Markdown"
+      }
+  );
+});
+
 export default composer;

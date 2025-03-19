@@ -31,14 +31,14 @@ export function createTransactionKeyboard(transactionId: string): InlineKeyboard
 export const walletsMenuKeyboard = new InlineKeyboard()
   .text("📋 All Wallets", "wallet_all").text("🔄 Set Default Wallet", "wallet_set_default").row()
   .text("💰 Balances", "menu_balance").row()
-  .text("« Back to Main Menu", "back_to_main");
+  .text("« Back to Main Menu", "back_to_main_send");
 
 // Main send menu keyboard
 export const sendMenuKeyboard = new InlineKeyboard()
   .text("✉️ Send to Email", "send_to_email").row()
   .text("👛 Send to Wallet", "send_to_wallet").row()
   .text("🏦 Bank Withdrawal", "send_to_bank").row()
-  .text("« Back to Main Menu", "back_to_main");
+  .text("« Back to Main Menu", "back_to_main_send");
 
 export const txActionsMenuKeyboard = new InlineKeyboard()
   .text("💸 Send Money", "menu_send").text("🏦 Deposit", "menu_deposit").row()
