@@ -76,7 +76,6 @@ export const transactionService = {
     const amount = `${formatAmount(transaction.amount, 8)} ${transaction.currency}`;
     const type = transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1);
     
-    // TODO: change this
     return `/${index + 1} *Recipient:* ${recipient}\n*Type:* ${type}\n*Amount:* ${amount}\n*Date:* ${date}\n`;
   },
   

@@ -2,6 +2,7 @@ import { authApi } from '../../utils/api';
 import { MyContext, setAuthenticated, clearAuthentication } from '../../utils/sessions';
 import { EmailOtpRequestResponse } from '../../types/auth';
 import { recordAuthAttempt } from '../../utils/rate-limiter';
+import { notificationService } from '../../modules/notifications/service'
 
 export const authService = {
   // Request OTP for email authentication
@@ -87,6 +88,30 @@ export const authService = {
     } catch (error) {
       console.error('Error fetching user profile:', error);
       return null;
+    }
+  },
+
+  initializeNotifications: async (ctx: MyContext): Promise<void> => {
+    try {
+      if (!ctx.from || !ctx.chat) {
+        return;
+      }
+      
+      const organizationId = ctx.session.organizationId;
+      const accessToken = ctx.session.accessToken;
+      
+      if (!organizationId || !accessToken) {
+        return;
+      }
+      
+      // Subscribe to deposit notifications
+      await notificationService.subscribeToDeposits(
+        organizationId,
+        accessToken,
+        ctx.chat.id
+      );
+    } catch (error) {
+      console.error('Error initializing notifications:', error);
     }
   },
 

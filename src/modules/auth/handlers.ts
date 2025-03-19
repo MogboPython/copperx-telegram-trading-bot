@@ -122,6 +122,11 @@ composer.on("message:text").filter(ctx =>
     
     if (success) {
       await ctx.api.deleteMessage(ctx.chat.id, loadingMsg.message_id);
+      
+        
+      // Initialize deposit notifications
+      await authService.initializeNotifications(ctx);
+      
       await ctx.reply(
         getWelcomeMessage(ctx) + "\n\n" + 
         getSuccessMessage("Your account has been successfully connected!"), 
@@ -180,5 +185,6 @@ export const handleLogoutAction = async (ctx: MyContext) => {
         );
     }
 };
+
 
 export default composer;

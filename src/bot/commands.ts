@@ -7,37 +7,13 @@ export const commands: BotCommand[] = [
     description: "Start the bot and connect your account",
   },
   {
-    command: "profile",
-    description: "View your profile information",
-  },
-  {
-    command: "kyc",
-    description: "Check your KYC verification status",
-  },
-  {
-    command: "wallets",
-    description: "View your connected wallets",
-  },
-  {
-    command: "balance",
-    description: "Check your Wallet balance",
-  },
-  {
-    command: "send",
-    description: "Send USDC to another user",
-  },
-  {
-    command: "deposit",
-    description: "Deposit USDC to your account",
-  },
-  {
-    command: "transactions",
-    description: "View your transaction history",
-  },
-  {
     command: "help",
     description: "Get help and support",
   },
+  {
+    command: "chat",
+    description: "Join our telegran group for questions and feedback"
+  }
 ];
 
 // Map text commands to their slash command equivalents

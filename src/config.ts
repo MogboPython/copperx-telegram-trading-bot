@@ -11,6 +11,9 @@ export const config = {
 
   // CopperX API key
   COPPERX_API_KEY: process.env.COPPERX_API_KEY || '',
+
+  VITE_PUSHER_CLUSTER: process.env.VITE_PUSHER_CLUSTER || '',
+  PUSHER_CLUSTER: process.env.PUSHER_CLUSTER || '',
   
   // Session configuration
   SESSION_KEY: process.env.SESSION_KEY || 'copperx:session',

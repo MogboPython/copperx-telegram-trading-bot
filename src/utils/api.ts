@@ -1,5 +1,8 @@
 import axios from 'axios';
 import { config } from '../config';
+import { AuthResponse, EmailOtpRequestResponse } from '../types/auth';
+import { UserData } from '../types/user';
+import { KycStatusResponse } from '../types/kyc';
 import { Transaction, TransactionResponse } from '../types/transaction';
 import { Wallet } from '../types/wallet';
 
@@ -13,18 +16,16 @@ const api = axios.create({
 
 // Authentication API methods
 export const authApi = {
-  // Request email OTP for authentication
   requestEmailOtp: async (email: string) => {
     try {
       const response = await api.post('/api/auth/email-otp/request', { email });
-      return response.data;
+      return response.data as EmailOtpRequestResponse;
     } catch (error) {
       console.error('Error requesting email OTP:', error);
       throw error;
     }
   },
   
-  // Authenticate with email OTP
   authenticateWithOtp: async (email: string, otp: string, sid: string) => {
     try {
       const response = await api.post('/api/auth/email-otp/authenticate', { 
@@ -32,20 +33,19 @@ export const authApi = {
         otp, 
         sid 
       });
-      return response.data;
+      return response.data as AuthResponse;
     } catch (error) {
       console.error('Error authenticating with OTP:', error);
       throw error;
     }
   },
   
-  // Get user profile information
   getUserProfile: async (token: string) => {
     try {
       const response = await api.get('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data as UserData;
     } catch (error) {
       console.error('Error fetching user profile:', error);
       throw error;
@@ -60,7 +60,7 @@ export const kycApi = {
       const response = await api.get('/api/kycs', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      return response.data;
+      return response.data as KycStatusResponse;
     } catch (error) {
       console.error('Error fetching KYC status:', error);
       throw error;
@@ -106,14 +106,12 @@ export const walletsApi = {
     }
   },
   
-  // WalletApiResponse
   setDefaultWallet: async (token: string, walletId: string) => {
     try {
       const response = await api.post('/api/wallets/default', {walletId}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // TODO: type safety
-      return response.data;
+      return response.data as Wallet;
     } catch (error) {
       console.error('Error setting default wallet:', error);
       throw error;
@@ -147,30 +145,14 @@ export const transferApi = {
     }
   },
 
-  // TODO: do away with
   sendMoney: async (token: string, data: { recipient: string; amount: number }) => {
     try {
-      const response = await api.post('/transfer/send', data, {
+      const response = await api.post('api/transfer/', data, {
         headers: { Authorization: `Bearer ${token}` }
       });
       return response.data;
     } catch (error) {
       console.error('Error sending money:', error);
-      throw error;
-    }
-  },
-};
-
-// Deposit API methods
-export const depositApi = {
-  getDepositAddress: async (token: string) => {
-    try {
-      const response = await api.get('/deposit/address', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching deposit address:', error);
       throw error;
     }
   },

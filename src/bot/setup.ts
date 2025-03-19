@@ -3,7 +3,8 @@ import { commands } from "./commands";
 import { handleLogoutAction } from "../modules/auth/handlers";
 import { handleProfileAction } from "../modules/profile/handlers";
 import { handleKYCAction } from "../modules/kyc/handlers";
-import { handleWalletsAction, handleWalletBalances, handleSendAction, handleDepositAction } from "../modules/wallet/handlers";
+import { handleWalletsAction, handleWalletBalances } from "../modules/wallet/handlers";
+import { handleSendAction, handleDepositAction } from '../modules/transfers/handlers'
 import { handleTransactionsAction } from '../modules/transactions/handlers';
 import { authRateLimiter } from "../utils/rate-limiter";
 
@@ -12,6 +13,7 @@ import homeHandlers from "../modules/home/handlers";
 import authHandlers from "../modules/auth/handlers";
 import walletHandlers from "../modules/wallet/handlers";
 import txHandlers from '../modules/transactions/handlers';
+import transferHandlers from '../modules/transfers/handlers'
 
 export function setupBot(sessionMiddleware: any) {
   // Error handling
@@ -33,6 +35,7 @@ export function setupBot(sessionMiddleware: any) {
   bot.use(homeHandlers);
   bot.use(walletHandlers);
   bot.use(txHandlers);
+  bot.use(transferHandlers);
 
   // Map inline button callbacks to command handlers
   bot.callbackQuery(/^menu_(.+)$/, async (ctx) => {

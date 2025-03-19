@@ -33,6 +33,10 @@ export interface SessionData {
   walletId?: string;
   currentAction?: string;
   tempData?: Record<string, any>;
+
+  // Session handler for saving the address and amount for payee
+  sendToAddress?: string;
+  sendAmount?: string;
 }
 
 export interface UserSession {
